@@ -1,4 +1,5 @@
-Flask
-Flask-WTF
-upstash-redis
-gunicorn
+flask>=3.0.0
+upstash-redis>=1.0.0
+apscheduler>=3.10.0
+qrcode[pil]>=7.4.0
+gunicorn>=21.0.0

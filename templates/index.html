@@ -3,30 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LocalDrop</title>
+    <meta name="google-site-verification" content="Rs8NlVvoTspfXAu16HTaHyXka5EAl5RS868jLX5WKaU" />
+    <title>FileDrop</title>
+
+    <meta name="description"
+          content="Transfer files and text between any two devices instantly using a 7-digit code. No login, no account. Files auto-delete in 15 minutes. Free forever.">
+    <meta name="keywords"
+          content="file transfer without login, send file to phone, no account file share, temporary file sharing, online clipboard, send file by code, filedrop">
+    <meta name="author" content="FileDrop">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://localdrop-production-a980.up.railway.app/">
+
+    <meta property="og:type"        content="website">
+    <meta property="og:title"       content="FileDrop — Share Files Without Login">
+    <meta property="og:description" content="Send files and text to any device using a 7-digit code. Auto-deletes in 15 minutes. No account needed.">
+    <meta property="og:url"         content="https://localdrop-production-a980.up.railway.app/">
+    <meta property="og:site_name"   content="FileDrop">
+    <meta property="og:image"       content="https://localdrop-production-a980.up.railway.app/static/og-image.png">
+
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:title"       content="FileDrop — Share Files Without Login">
+    <meta name="twitter:description" content="7-digit code. Auto-deletes in 15 min. No login.">
+    <meta name="twitter:image"       content="https://localdrop-production-a980.up.railway.app/static/og-image.png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='/images/FileDrop-favicon.png') }}" type="image/x-icon">
 </head>
 <body>
     <div class="shell">
         <section class="hero">
-            <h1>LocalDrop</h1>
-            <p>Send text or files to another device in seconds. No login, no account, and everything disappears automatically after 5 minutes.</p>
-            <span class="pill">🔑 7-digit code</span>
-            <span class="pill">🔥 Burn after Download</span>
-            <span class="pill">🔒 No registration required</span>
-            <span class="pill">📂 Multifile support</span>
-
-            
+            <h1>
+                <img id="logo" src="{{ url_for('static', filename='/images/FileDrop-favicon.png') }}" alt="FileDrop">
+                FileDrop
+            </h1>
+            <p>Send text or files to another device in seconds. No login, no account, and everything disappears automatically after 15 minutes.</p>
+            <div class="tiny">Allowed types: PNG, 📸JPEG, 📄PDF, 📝Word, TXT</div>
+            <span class="pill"><div class="round">🔑</div> 7-digit code</span>
+            <span class="pill"><div class="round">🔥</div> Burn after Download</span>
+            <span class="pill"><div class="round">🔒</div> No registration required</span>
+            <span class="pill"><div class="round">📂</div> Multifile support</span>
         </section>
 
         <div class="grid">
+
+            <!-- ═══════════════════════════════════════════
+                 SEND CARD
+            ═══════════════════════════════════════════ -->
             <section class="card">
                 <h2>Send a transfer</h2>
                 <p>Choose whether you want to share text or a file.</p>
 
+                <!--
+                    FLASH MESSAGES (Jinja)
+                    These only show on a full page reload (non-JS fallback).
+                    When AJAX is active, errors are shown by JavaScript below.
+                -->
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         {% for category, message in messages %}
@@ -35,17 +69,27 @@
                     {% endif %}
                 {% endwith %}
 
-                <div class="tabs">
-                    <button type="button" class="tab-btn active" data-mode="text">Text</button>
-                    <button type="button" class="tab-btn" data-mode="file">File</button>
-                </div>
+                <!-- CHANGE 1: Added id="sendForm" so JavaScript can find this form -->
+                <form id="sendForm"
+                      action="{{ url_for('send_transfer') }}"
+                      method="post"
+                      enctype="multipart/form-data">
 
-                <form action="{{ url_for('send_transfer') }}" method="post" enctype="multipart/form-data">
                     <input type="hidden" id="modeInput" name="mode" value="text">
+
+                    <div class="tabs">
+                        <button type="button" class="tab-btn active" data-mode="text">
+                            <div class="round">✍️</div> Text
+                        </button>
+                        <button type="button" class="tab-btn" data-mode="file">
+                            <div class="round">📂</div> File
+                        </button>
+                    </div>
 
                     <div id="textPanel" class="panel active">
                         <label for="textInput">Text content</label>
-                        <textarea id="textInput" name="text" placeholder="Paste a note, link, code, or anything you want to share."></textarea>
+                        <textarea id="textInput" name="text"
+                                  placeholder="Paste a note, link, code, or anything you want to share."></textarea>
                     </div>
 
                     <div id="filePanel" class="panel">
@@ -53,14 +97,34 @@
                             <strong id="dropTitle">Drop your file here</strong>
                             <p class="hint" id="dropHint">Drag and drop a file, or click to browse</p>
                             <div class="tiny" id="selectedFile">No file selected yet</div>
-                            <input id="fileInput" type="file" name="file" accept=".png,.jpg,.jpeg,.pdf,.doc,.docx,.txt" hidden>
+                            <input id="fileInput" type="file" name="file"
+                                   accept=".png,.jpg,.jpeg,.pdf,.doc,.docx,.txt" hidden>
                         </div>
                         <div class="tiny">Allowed types: PNG, JPEG, PDF, Word, TXT · Max 10 MB</div>
                     </div>
 
-                    <button class="btn btn-primary" type="submit">Generate transfer code</button>
+                    <!-- CHANGE 2: id="sendBtn" added so JS can disable it during request -->
+                    <button id="sendBtn" class="btn btn-primary" type="submit">
+                        Generate transfer code
+                    </button>
                 </form>
 
+                <!--
+                    CHANGE 3: Two new containers added after the form.
+
+                    sendError  → JavaScript puts error messages here (no reload needed)
+                    sendResult → JavaScript puts the code card here after success
+
+                    Both start hidden (display:none).
+                    They become visible only when JavaScript fills them.
+
+                    The old Jinja block below still works
+                    as a fallback for browsers with JavaScript disabled.
+                -->
+                <div id="sendError" class="flash error" style="display:none"></div>
+                <div id="sendResult" style="display:none"></div>
+
+                <!-- Jinja fallback (only renders on full page load, not AJAX) -->
                 {% if created_transfer %}
                     <div class="code-card">
                         <h3>Transfer ready</h3>
@@ -69,149 +133,546 @@
                                 <div class="digit">{{ digit }}</div>
                             {% endfor %}
                         </div>
-                        <div class="meta">Share this code with the receiving device. It will expire in 5 minutes.</div>
-                        <div id="countdown" class="meta" data-expires="{{ created_transfer.expires_at | int }}">Loading countdown...</div>
+                        <div class="meta">Share this code with the receiving device. It will expire in 15 minutes.</div>
+                        <div id="countdown" class="meta"
+                             data-expires="{{ created_transfer.expires_at | int }}">
+                            Loading countdown...
+                        </div>
                         {% if created_transfer.type == 'file' %}
-                            <a class="download-link" href="{{ url_for('download_transfer', code=created_transfer.code) }}">Download file now</a>
+                            <a class="download-link"
+                               href="{{ url_for('download_transfer', code=created_transfer.code) }}">
+                               Download file now
+                            </a>
                         {% endif %}
                     </div>
                 {% endif %}
             </section>
 
+
+            <!-- ═══════════════════════════════════════════
+                 RECEIVE CARD
+            ═══════════════════════════════════════════ -->
             <section class="card">
                 <h2>Receive a transfer</h2>
                 <p>Enter the 7-digit code from the sender and open the shared content.</p>
 
-                <form action="{{ url_for('retrieve_transfer') }}" method="post">
+                <!-- CHANGE 4: Added id="retrieveForm" -->
+                <form id="retrieveForm"
+                      action="{{ url_for('retrieve_transfer') }}"
+                      method="post">
                     <label for="codeInput">Code</label>
-                    <input id="codeInput" class="input" type="text" name="code" maxlength="7" placeholder="Enter 7 digits" inputmode="numeric">
-                    <button class="btn btn-secondary" type="submit">Retrieve transfer</button>
-                </form>
+                    <input id="codeInput" class="input" type="text"
+                           name="code" maxlength="7"
+                           placeholder="Enter 7 digits" inputmode="numeric">
 
+                    <!-- CHANGE 5: id="retrieveBtn" added -->
+                    <button id="retrieveBtn" class="btn btn-secondary" type="submit">
+                        Retrieve transfer
+                    </button>
+                </form>
+                
+
+                <!--
+                    CHANGE 6: Same pattern as send card.
+                    retrieveError → JS puts error here
+                    retrieveResult → JS puts the text/file result here
+                -->
+                <div id="retrieveError" class="flash error" style="display:none"></div>
+                <div id="retrieveResult" style="display:none"></div>
+
+                <!-- Jinja fallback -->
                 {% if retrieved_transfer %}
                     <div class="result-box">
                         {% if retrieved_transfer.type == 'text' %}
                             <strong>Text received</strong>
                             <p class="tiny">This transfer was consumed after opening it.</p>
-                            <textarea id="receivedText" class="received-text" readonly>{{ retrieved_transfer.content }}</textarea>
-                            <button class="btn btn-primary" id="copyButton" onclick="copyToClipboard()">Copy to clipboard</button>
-                            
+                            <textarea id="receivedText" class="received-text"
+                                      readonly>{{ retrieved_transfer.content }}</textarea>
+                            <button type="button" class="btn btn-primary"
+                                    id="copyButton" onclick="copyToClipboard()">
+                                Copy to clipboard
+                            </button>
                         {% else %}
                             <strong>File received</strong>
-                            <p class="tiny">{{ retrieved_transfer.filename }} · {{ (retrieved_transfer.size / 1024 / 1024) | round(2) }} MB</p>
-                            <a class="download-link" href="{{ url_for('download_transfer', code=retrieved_transfer.code) }}">Download file</a>
+                            <p class="tiny">
+                                {{ retrieved_transfer.filename }} ·
+                                {{ (retrieved_transfer.size / 1024 / 1024) | round(2) }} MB
+                            </p>
+                            <a class="download-link"
+                               href="{{ url_for('download_transfer', code=retrieved_transfer.code) }}">
+                               Download file
+                            </a>
                         {% endif %}
                     </div>
                 {% endif %}
             </section>
-        </div>
-    </div>
+
+        </div><!-- /grid -->
+    </div><!-- /shell -->
+
+    <footer id="footer">
+        <p>&copy; 2026 FileDrop. All rights reserved.</p>
+        <a href="{{ url_for('about') }}"><span class="pill">About</span></a>
+        <a href="{{ url_for('contact') }}"><span class="pill">Contact</span></a>
+        <a href="{{ url_for('feedback') }}"><span class="pill">Feedback</span></a>
+    </footer>
+
 
     <script>
-        const tabs = document.querySelectorAll('.tab-btn');
-        const textPanel = document.getElementById('textPanel');
-        const filePanel = document.getElementById('filePanel');
-        const modeInput = document.getElementById('modeInput');
-        const dropZone = document.getElementById('dropZone');
-        const fileInput = document.getElementById('fileInput');
-        const selectedFile = document.getElementById('selectedFile');
-        const dropTitle = document.getElementById('dropTitle');
-        const dropHint = document.getElementById('dropHint');
+    /*
+    ════════════════════════════════════════════════════════════════════
+      HOW AJAX WORKS IN THIS FILE — READ THIS FIRST
+    ════════════════════════════════════════════════════════════════════
 
-        function updateDropZone(file) {
-            if (file) {
-                selectedFile.textContent = `Selected: ${file.name}`;
-                dropTitle.textContent = 'File ready to transfer';
-                dropHint.textContent = 'Click or drop another file';
+    TRADITIONAL FORM (what you had before):
+      User clicks submit
+        → Browser packages the form data
+        → Browser sends POST to /send
+        → Flask processes it, returns a FULL new HTML page
+        → Browser replaces the entire page (page scrolls to top)
+
+    AJAX FORM (what we have now):
+      User clicks submit
+        → e.preventDefault() STOPS the browser from doing anything
+        → JavaScript packages the form data into FormData object
+        → JavaScript sends fetch() to /send (background HTTP request)
+        → Flask processes it, returns a small JSON object
+        → JavaScript reads the JSON and updates ONLY the result div
+        → Page stays exactly where it is. Zero scroll. Zero reload.
+
+    THE KEY HEADER:
+      'X-Requested-With': 'XMLHttpRequest'
+      This is how Flask tells the difference between a normal browser
+      form submit and a JavaScript fetch() call. When Flask sees this
+      header, it returns JSON instead of HTML.
+    ════════════════════════════════════════════════════════════════════
+    */
+
+
+    // ── SECTION 1: Tab switching (unchanged from your original) ──────
+
+    const tabs       = document.querySelectorAll('.tab-btn');
+    const textPanel  = document.getElementById('textPanel');
+    const filePanel  = document.getElementById('filePanel');
+    const modeInput  = document.getElementById('modeInput');
+    const dropZone   = document.getElementById('dropZone');
+    const fileInput  = document.getElementById('fileInput');
+    const selectedFile = document.getElementById('selectedFile');
+    const dropTitle  = document.getElementById('dropTitle');
+    const dropHint   = document.getElementById('dropHint');
+
+    function updateDropZone(file) {
+        if (file) {
+            selectedFile.textContent = `Selected: ${file.name}`;
+            selectedFile.style.color = '#00ff00';
+            dropTitle.textContent = 'File ready to transfer';
+            dropHint.textContent  = 'Click or drop another file';
+        } else {
+            selectedFile.textContent = 'No file selected yet';
+            dropTitle.textContent    = 'Drop your file here';
+            dropHint.textContent     = 'Drag and drop a file, or click to browse';
+        }
+    }
+
+    tabs.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            tabs.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            const mode = button.dataset.mode;
+            modeInput.value = mode;
+            if (mode === 'file') {
+                textPanel.classList.remove('active');
+                filePanel.classList.add('active');
             } else {
-                selectedFile.textContent = 'No file selected yet';
-                dropTitle.textContent = 'Drop your file here';
-                dropHint.textContent = 'Drag and drop a file, or click to browse';
-            }
-        }
-
-        tabs.forEach(button => {
-            button.addEventListener('click', () => {
-                tabs.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                const mode = button.dataset.mode;
-                modeInput.value = mode;
-                if (mode === 'file') {
-                    textPanel.classList.remove('active');
-                    filePanel.classList.add('active');
-                } else {
-                    filePanel.classList.remove('active');
-                    textPanel.classList.add('active');
-                }
-            });
-        });
-
-        dropZone.addEventListener('click', () => fileInput.click());
-        dropZone.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                fileInput.click();
+                filePanel.classList.remove('active');
+                textPanel.classList.add('active');
             }
         });
-        dropZone.addEventListener('dragover', (event) => {
+    });
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
-            dropZone.classList.add('dragging');
-        });
-        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragging'));
-        dropZone.addEventListener('drop', (event) => {
-            event.preventDefault();
-            dropZone.classList.remove('dragging');
-            const file = event.dataTransfer.files[0];
-            if (file) {
-                fileInput.files = event.dataTransfer.files;
-                updateDropZone(file);
-            }
-        });
-        fileInput.addEventListener('change', () => {
-            updateDropZone(fileInput.files[0]);
-        });
-        async function copyToClipboard() {
-            const receivedText = document.getElementById('receivedText');
-            const copyButton = document.getElementById('copyButton');
+            fileInput.click();
+        }
+    });
+    dropZone.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        dropZone.classList.add('dragging');
+    });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragging'));
+    dropZone.addEventListener('drop', (event) => {
+        event.preventDefault();
+        dropZone.classList.remove('dragging');
+        const file = event.dataTransfer.files[0];
+        if (file) {
+            fileInput.files = event.dataTransfer.files;
+            updateDropZone(file);
+        }
+    });
+    fileInput.addEventListener('change', () => updateDropZone(fileInput.files[0]));
 
-            if (!receivedText || !copyButton) {
-                return;
-            }
 
-            const textToCopy = receivedText.value;
-            try {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    await navigator.clipboard.writeText(textToCopy);
-                } else {
-                    receivedText.focus();
-                    receivedText.select();
-                    document.execCommand('copy');
-                }
+    // ── SECTION 2: Countdown (shared by both Jinja and AJAX results) ─
 
-                copyButton.textContent = 'Copied!';
-                setTimeout(() => {
-                    copyButton.textContent = 'Copy to clipboard';
-                }, 1500);
-            } catch (error) {
-                copyButton.textContent = 'Copy failed';
-                setTimeout(() => {
-                    copyButton.textContent = 'Copy to clipboard';
-                }, 1500);
+    /*
+      startCountdown(elementId, expiresAtSeconds)
+      Works for both:
+        - The Jinja-rendered #countdown element (on full page load)
+        - The dynamically created #countdownAjax element (after AJAX)
+    */
+    function startCountdown(elementId, expiresAt) {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+        const tick = () => {
+            const remaining = Math.max(
+                0,
+                Math.floor((expiresAt * 1000 - Date.now()) / 1000)
+            );
+            const mm = String(Math.floor(remaining / 60)).padStart(2, '0');
+            const ss = String(remaining % 60).padStart(2, '0');
+            el.textContent = remaining > 0 ? `Deletes in ${mm}:${ss}` : 'Expired';
+        };
+        tick();
+        setInterval(tick, 1000);
+    }
+
+    // Start countdown if the Jinja version rendered (full page load)
+    const staticCountdown = document.getElementById('countdown');
+    if (staticCountdown) {
+        const expiresAt = Number(staticCountdown.dataset.expires || 0);
+        startCountdown('countdown', expiresAt);
+    }
+
+
+    // ── SECTION 3: Copy to clipboard (original, for Jinja fallback) ──
+
+    async function copyToClipboard() {
+        const receivedText = document.getElementById('receivedText');
+        const copyButton   = document.getElementById('copyButton');
+        if (!receivedText || !copyButton) return;
+        try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(receivedText.value);
+            } else {
+                receivedText.focus();
+                receivedText.select();
+                document.execCommand('copy');
             }
+            copyButton.textContent = 'Copied!';
+            setTimeout(() => copyButton.textContent = 'Copy to clipboard', 1500);
+        } catch {
+            copyButton.textContent = 'Copy failed';
+            setTimeout(() => copyButton.textContent = 'Copy to clipboard', 1500);
+        }
+    }
+
+
+    // ── SECTION 4: HELPERS ────────────────────────────────────────────
+
+    /*
+      escapeHtml — ALWAYS escape user-generated content before putting
+      it into innerHTML. This prevents XSS attacks. If the server
+      sends back content="<script>alert(1)", this function
+      turns it into safe text that browsers display as plain text.
+    */
+    function escapeHtml(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function hideElement(id) {
+        const el = document.getElementById(id);
+        if (el) { el.style.display = 'none'; el.innerHTML = ''; }
+    }
+
+    function showError(containerId, message) {
+        const el = document.getElementById(containerId);
+        if (!el) return;
+        el.textContent = message;
+        el.style.display = 'block';
+    }
+
+    function clearPreviousResults() {
+        // Hide old results and errors before a new submission
+        hideElement('sendResult');
+        hideElement('sendError');
+        hideElement('retrieveResult');
+        hideElement('retrieveError');
+    }
+
+
+    // ── SECTION 5: DOM RENDERING after AJAX response ──────────────────
+
+    /*
+      renderCodeCard(data)
+      Called when /send returns { ok: true, code, expires_at, type }
+      Builds the code card HTML and inserts it into #sendResult
+    */
+    function renderCodeCard(data) {
+        const container = document.getElementById('sendResult');
+
+        // Build 7 digit boxes — same structure as your Jinja template
+        const digits = data.code.split('').map(
+            d => `<div class="digit">${escapeHtml(d)}</div>`
+        ).join('');
+
+        // Build download link if it was a file transfer
+        const downloadLink = data.type === 'file'
+            ? `<a class="download-link" href="/download/${escapeHtml(data.code)}">Download file now</a>`
+            : '';
+        
+        const qrSection = data.qr_base64 ? `
+        <div class="qr-section">
+             <p>OR</p>
+                <div>
+                    <h2>Scan QR code</h2>
+                        
+                </div>
+            <div class="qr-frame">
+               
+                <img
+                    src="data:image/png;base64,${data.qr_base64}"
+                    alt="Scan to receive on another device"
+                    width="180"
+                    height="180"
+                >
+            </div>
+            <p class="qr-caption">📱 Scan with any camera to receive</p>
+            <p class="qr-sub">${data.type === 'file' ? 'File downloads directly on the scanned device' : 'Your text appears instantly on the scanned device'}</p>
+        </div>
+        <div class="qr-divider"></div>` : '';
+
+        container.innerHTML = `
+        <div class="code-card">
+            <h3>Transfer ready</h3>
+            <div class="code-box">${digits}</div>
+            ${qrSection}
+            <div class="meta">Share the 7-digit code or scan the QR. Expires in 15 minutes.</div>
+            <div id="countdownAjax" class="meta">Loading countdown...</div>
+            ${downloadLink}
+        </div>
+    `;
+
+        container.style.display = 'block';
+
+        // Start the countdown timer on the freshly created element
+        startCountdown('countdownAjax', data.expires_at);
+    }
+
+    /*
+      renderRetrieveResult(data)
+      Called when /retrieve returns { ok: true, type, content / filename }
+      Builds the result box and inserts it into #retrieveResult
+    */
+    function renderRetrieveResult(data) {
+        const container = document.getElementById('retrieveResult');
+
+        if (data.type === 'text') {
+            container.innerHTML = `
+                <div class="result-box">
+                    <strong>Text received</strong>
+                    <p class="tiny">This transfer was consumed after opening it.</p>
+                    <textarea id="receivedTextAjax" class="received-text"
+                              readonly>${escapeHtml(data.content)}</textarea>
+                    <button type="button" class="btn btn-primary"
+                            onclick="copyAjaxText()">
+                        Copy to clipboard
+                    </button>
+                </div>
+            `;
+        } else {
+            const sizeMB = (data.size / 1024 / 1024).toFixed(2);
+            container.innerHTML = `
+                <div class="result-box">
+                    <strong>File received</strong>
+                    <p class="tiny">${escapeHtml(data.filename)} · ${sizeMB} MB</p>
+                    <a class="download-link" href="/download/${escapeHtml(data.code)}">
+                        Download file
+                    </a>
+                </div>
+            `;
         }
 
-        const countdownEl = document.getElementById('countdown');
-        if (countdownEl) {
-            const expiresAt = Number(countdownEl.dataset.expires || 0);
-            const tick = () => {
-                const remaining = Math.max(0, Math.floor((expiresAt * 1000 - Date.now()) / 1000));
-                const minutes = String(Math.floor(remaining / 60)).padStart(2, '0');
-                const seconds = String(remaining % 60).padStart(2, '0');
-                countdownEl.textContent = remaining > 0 ? `Deletes in ${minutes}:${seconds}` : 'Expired';
-            };
-            tick();
-            setInterval(tick, 1000);
+        container.style.display = 'block';
+    }
+
+    // Copy button for AJAX-rendered text results
+    async function copyAjaxText() {
+        const ta  = document.getElementById('receivedTextAjax');
+        const btn = ta ? ta.nextElementSibling : null;
+        if (!ta || !btn) return;
+        try {
+            await navigator.clipboard.writeText(ta.value);
+            btn.textContent = 'Copied!';
+            setTimeout(() => btn.textContent = 'Copy to clipboard', 1500);
+        } catch {
+            ta.select();
+            document.execCommand('copy');
+            btn.textContent = 'Copied!';
+            setTimeout(() => btn.textContent = 'Copy to clipboard', 1500);
         }
+    }
+
+
+    // ── SECTION 6: AJAX SEND FORM ─────────────────────────────────────
+
+    /*
+      STEP-BY-STEP WHAT HAPPENS WHEN USER CLICKS "Generate transfer code":
+
+      Step 1 — e.preventDefault()
+        The browser's default action for a form submit is to POST the
+        page and reload. preventDefault() cancels that entirely.
+
+      Step 2 — new FormData(this)
+        FormData is a built-in browser object. It automatically reads
+        every input, textarea, file input, and hidden field inside the
+        form and packages them exactly the way a browser POST would.
+        Files are included as binary data — fetch() handles this.
+
+      Step 3 — fetch(url, options)
+        fetch() is JavaScript's built-in HTTP client. It sends an HTTP
+        request in the background — your page doesn't move, doesn't
+        reload, doesn't scroll. The browser just waits for a response.
+        'X-Requested-With': 'XMLHttpRequest' is a custom header that
+        tells Flask "this came from JavaScript, not a form submit".
+
+      Step 4 — .then(res => res.json())
+        When Flask responds, fetch() gives you a Response object.
+        .json() reads the response body and parses it as JSON.
+        This returns another Promise (hence the second .then).
+
+      Step 5 — .then(data => { ... })
+        data is now a plain JavaScript object: { ok: true, code: "4829371", ... }
+        We check data.ok and call the right render function.
+
+      Step 6 — .catch()
+        If the network fails or fetch() itself errors, catch handles it.
+        This is NOT the same as a 400/404/500 HTTP error — those still
+        resolve in .then() because fetch() got a response.
+    */
+
+    document.getElementById('sendForm').addEventListener('submit', function(e) {
+
+        // STEP 1: Stop default browser behaviour
+        e.preventDefault();
+
+        clearPreviousResults();
+
+        const btn = document.getElementById('sendBtn');
+        btn.disabled    = true;
+        btn.textContent = 'Generating...';
+
+        // STEP 2: Package the form (text, file, hidden mode input — all of it)
+        const formData = new FormData(this);
+
+        // STEP 3: Send in background
+        fetch("{{ url_for('send_transfer') }}", {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+                // Note: Do NOT set Content-Type here when using FormData
+                // fetch() sets it automatically with the correct boundary
+                // for multipart/form-data (needed for file uploads)
+            },
+            body: formData,
+        })
+
+        // STEP 4: Parse JSON response from Flask
+        .then(function(response) {
+            return response.json();
+        })
+
+        // STEP 5: Use the data
+        .then(function(data) {
+            btn.disabled    = false;
+            btn.textContent = 'Generate transfer code';
+
+            if (data.ok) {
+                renderCodeCard(data);       // show the code
+            } else {
+                showError('sendError', data.error);  // show error message
+            }
+        })
+
+        // STEP 6: Handle network failure
+        .catch(function() {
+            btn.disabled    = false;
+            btn.textContent = 'Generate transfer code';
+            showError('sendError', 'Network error. Please try again.');
+        });
+    });
+
+
+    // ── SECTION 7: AJAX RETRIEVE FORM ────────────────────────────────
+
+    /*
+      Same pattern as send — intercept submit, fetch, render.
+      The only difference is the URL and what we render on success.
+    */
+
+    document.getElementById('retrieveForm').addEventListener('submit', function(e) {
+
+        e.preventDefault();
+
+        clearPreviousResults();
+
+        const btn = document.getElementById('retrieveBtn');
+        btn.disabled    = true;
+        btn.textContent = 'Retrieving...';
+
+        fetch("{{ url_for('retrieve_transfer') }}", {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: new FormData(this),
+        })
+        .then(res => res.json())
+        .then(data => {
+            btn.disabled    = false;
+            btn.textContent = 'Retrieve transfer';
+
+            if (data.ok) {
+                renderRetrieveResult(data);
+            } else {
+                showError('retrieveError', data.error);
+            }
+        })
+        .catch(() => {
+            btn.disabled    = false;
+            btn.textContent = 'Retrieve transfer';
+            showError('retrieveError', 'Network error. Please try again.');
+        });
+    });
+
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "FileDrop",
+      "url": "https://localdrop-production-a980.up.railway.app/",
+      "description": "Transfer files and text between devices using a 7-digit code. No login required. Files auto-delete in 15 minutes.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any — works in all browsers",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "INR"
+      },
+      "featureList": [
+        "No login required",
+        "Files auto-delete after 15 minutes",
+        "Burn after read",
+        "7-digit transfer code",
+        "Supports PDF, Word, PNG, JPEG, TXT"
+      ]
+    }
     </script>
 </body>
 </html>

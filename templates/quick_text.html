@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FileDrop — Text Received</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='/images/FileDrop-favicon.png') }}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=Source+Sans+3:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #080B14;
+            color: #A8B4CC;
+            font-family: 'Source Sans 3', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            text-align: center;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px 60px;
+        }
+        .brand {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 20px;
+            color: #EDF2FF;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dot { color: #0CCFA0; }
+        .card {
+            width: 100%;
+            max-width: 480px;
+            background: #0E1220;
+            border: 1px solid #1C2438;
+            border-radius: 20px;
+            padding: 28px 24px;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: rgba(12,207,160,0.08);
+            border: 1px solid rgba(12,207,160,0.2);
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #0CCFA0;
+            margin-bottom: 18px;
+        }
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #EDF2FF;
+            margin-bottom: 6px;
+        }
+        .sub {
+            font-size: 13px;
+            color: #5C6880;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 160px;
+            background: #141828;
+            border: 1px solid #253048;
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: #EDF2FF;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 16px;      /* 16px minimum — readable on mobile */
+            line-height: 1.65;
+            resize: vertical;
+            outline: none;
+        }
+        .btn {
+            margin-top: 14px;
+            width: 100%;
+            padding: 14px 0;
+            background: #0CCFA0;
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background .2s;
+        }
+        .btn:hover { background: #14FFBE; }
+        .notice {
+            margin-top: 16px;
+            padding: 10px 14px;
+            background: rgba(240,84,106,0.08);
+            border: 1px solid rgba(240,84,106,0.2);
+            border-radius: 10px;
+            font-size: 13px;
+            color: #F0546A;
+            line-height: 1.5;
+        }
+        #logo{
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
+    margin-bottom: -6px;
+    align-items: center;
+}
+        .back {
+            margin-top: 28px;
+            font-size: 13px;
+            color: #5C6880;
+        }
+        .back a { color: #0CCFA0; text-decoration: none; }
+        .back a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <h1>
+        <img id="logo" src="{{ url_for('static', filename='/images/FileDrop-favicon.png') }}" alt="FileDrop">
+            FileDrop
+    </h1>
+
+    <div class="card">
+        <div class="badge">✅ Transfer Received</div>
+        <h1>Your text is here</h1>
+        <p class="sub">
+            This content was permanently deleted from our servers the moment
+            you opened this page.
+        </p>
+
+        <textarea id="content" readonly>{{ content }}</textarea>
+
+        <button class="btn" onclick="copyText()">Copy to Clipboard</button>
+
+        <div class="notice">
+            🔥 Burn after read — this transfer no longer exists on our servers.
+            Save the content before closing this tab.
+        </div>
+    </div>
+
+    <p class="back">
+        Need to send something? <a href="{{ url_for('index') }}">Go to FileDrop →</a>
+    </p>
+
+    <script>
+        async function copyText() {
+            const ta  = document.getElementById('content');
+            const btn = document.querySelector('.btn');
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(ta.value);
+                } else {
+                    ta.select();
+                    document.execCommand('copy');
+                }
+                btn.textContent = '✓ Copied!';
+            } catch {
+                btn.textContent = 'Copy failed — select manually';
+            }
+            setTimeout(() => btn.textContent = 'Copy to Clipboard', 2000);
+        }
+    </script>
+</body>
+</html>

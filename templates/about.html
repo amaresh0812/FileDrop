@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<!--
+  FileDrop — about.html
+  ─────────────────────────────────────────────────────
+  Jinja2 template. Drop into your templates/ folder.
+
+  Add this route to app.py:
+  ─────────────────────────────────────────────────────
+  @app.route("/about")
+  def about():
+      return render_template("about.html")
+  ─────────────────────────────────────────────────────
+  Add this link in index.html footer:
+  <a href="{{ url_for('about') }}">Legal & Privacy</a>
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About</title>
+  <meta name="description"
+        content="FileDrop legal information — privacy policy, terms of use, data retention, and compliance details for Indian and international users.">
+  <meta name="robots" content="index, follow">
+<link rel="shortcut icon" href="{{ url_for('static', filename='/images/FileDrop-favicon.png') }}"  type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Source+Sans+3:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    
+
+  <style>
+    /* ── DESIGN TOKENS ────────────────────────────────────── */
+    :root {
+      --bg:           #080B14;
+      --card:         #0E1220;
+      --inner:        #141828;
+      --border:       #1C2438;
+      --border-mid:   #253048;
+
+      --accent:       #0CCFA0;
+      --accent-dim:   rgba(12,207,160,0.07);
+      --accent-bdr:   rgba(12,207,160,0.18);
+      --accent-hi:    #14FFBE;
+
+      --text-1:       #EDF2FF;
+      --text-2:       #A8B4CC;
+      --text-3:       #5C6880;
+
+      --ok:           #0CCFA0;
+      --ok-dim:       rgba(12,207,160,0.09);
+      --warn:         #F5A623;
+      --warn-dim:     rgba(245,166,35,0.09);
+      --err:          #F0546A;
+      --err-dim:      rgba(240,84,106,0.09);
+      --err-bdr:      rgba(240,84,106,0.22);
+
+      --radius:       12px;
+      --radius-sm:    8px;
+      --radius-lg:    20px;
+      --radius-pill:  999px;
+
+      --font-d:       'Outfit', sans-serif;
+      --font-b:       'Source Sans 3', sans-serif;
+
+      --max-w:        740px;
+    }
+
+    /* ── RESET ────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-2);
+      font-family: var(--font-b);
+      font-size: 16px;
+      line-height: 1.75;
+      min-height: 100vh;
+    }
+
+    a { color: var(--accent); text-decoration: none; transition: color .15s; }
+    a:hover { color: var(--accent-hi); text-decoration: underline; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 4px; }
+
+    /* ── LAYOUT HELPERS ───────────────────────────────────── */
+    .wrap {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ── NAV ──────────────────────────────────────────────── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(8,11,20,.9);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .nav-logo {
+      width: 30px; height: 30px;
+      background: linear-gradient(135deg, var(--accent), #2563EB);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .nav-logo svg { display: block; }
+    .nav-name {
+      font-family: var(--font-d);
+      font-weight: 800;
+      font-size: 17px;
+      color: var(--text-1);
+      letter-spacing: -.01em;
+    }
+    .nav-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      background: transparent;
+      border: 1px solid var(--border-mid);
+      border-radius: var(--radius-pill);
+      color: var(--text-2);
+      font-family: var(--font-b);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color .2s, color .2s, background .2s;
+      min-height: 36px;
+      white-space: nowrap;
+    }
+    .nav-back:hover {
+      border-color: var(--accent-bdr);
+      color: var(--accent);
+      background: var(--accent-dim);
+      text-decoration: none;
+    }
+
+    /* ── HERO ─────────────────────────────────────────────── */
+    .hero {
+      padding: 56px 20px 44px;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-bdr);
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .hero-title {
+      font-family: var(--font-d);
+      font-weight: 800;
+      font-size: clamp(26px, 5vw, 36px);
+      color: var(--text-1);
+      letter-spacing: -.02em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .hero-sub {
+      font-size: 17px;
+      color: var(--text-2);
+      max-width: 560px;
+      line-height: 1.65;
+      margin-bottom: 22px;
+    }
+    .hero-meta {
+      font-size: 13px;
+      color: var(--text-3);
+    }
+
+    /* ── JUMP LINKS ───────────────────────────────────────── */
+    .jump-bar {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 20px 36px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .jump-link {
+      padding: 5px 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-3);
+      text-decoration: none;
+      transition: all .18s;
+      white-space: nowrap;
+    }
+    .jump-link:hover {
+      border-color: var(--accent-bdr);
+      color: var(--accent);
+      background: var(--accent-dim);
+      text-decoration: none;
+    }
+
+    /* ── SECTION CARD ─────────────────────────────────────── */
+    .section {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 20px 22px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 28px 24px;
+      border-left: 3px solid var(--border);    /* default: subtle */
+    }
+    .card.accent-ok  { border-left-color: var(--ok); }
+    .card.accent-warn{ border-left-color: var(--warn); }
+    .card.accent-err { border-left-color: var(--err); }
+    .card.accent-acc { border-left-color: var(--accent); }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .card-icon {
+      width: 38px; height: 38px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .icon-ok   { background: var(--ok-dim);   }
+    .icon-warn { background: var(--warn-dim);  }
+    .icon-err  { background: var(--err-dim);   }
+    .icon-acc  { background: var(--accent-dim);}
+
+    .card-title-group { flex: 1; }
+    .card-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 3px;
+    }
+    .card-title {
+      font-family: var(--font-d);
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text-1);
+      line-height: 1.25;
+    }
+
+    .card p { font-size: 15px; color: var(--text-2); margin-bottom: 12px; line-height: 1.75; }
+    .card p:last-child { margin-bottom: 0; }
+
+    /* ── PRIVACY GRID (SIGNATURE ELEMENT) ─────────────────── */
+    .privacy-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+    .privacy-card-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .privacy-card-header .card-title { font-size: 17px; }
+    .privacy-card-header p {
+      font-size: 14px;
+      color: var(--text-3);
+      margin-top: 4px;
+      line-height: 1.55;
+    }
+
+    .privacy-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .privacy-col {
+      padding: 20px 22px;
+    }
+    .privacy-col:first-child {
+      border-right: 1px solid var(--border);
+    }
+    .privacy-col-title {
+      font-family: var(--font-d);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .col-ok  .privacy-col-title { color: var(--ok); }
+    .col-no  .privacy-col-title { color: var(--text-3); }
+
+    .privacy-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .privacy-item:last-child { border-bottom: none; }
+    .pi-icon {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .pi-yes { background: var(--ok-dim); }
+    .pi-no  { background: var(--inner); }
+    .pi-text { flex: 1; }
+    .pi-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-1);
+      line-height: 1.3;
+    }
+    .pi-note {
+      font-size: 12px;
+      color: var(--text-3);
+      line-height: 1.45;
+      margin-top: 2px;
+    }
+
+    /* ── LIST STYLES ──────────────────────────────────────── */
+    .list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 15px;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+    .list li .li-icon {
+      width: 20px; height: 20px;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+      border-radius: 50%;
+    }
+    .list.ok-list  li .li-icon { background: var(--ok-dim); }
+    .list.err-list li .li-icon { background: var(--err-dim); }
+    .list.warn-list li .li-icon { background: var(--warn-dim); }
+    .list.neutral-list li .li-icon { background: var(--inner); }
+
+    /* ── LAW BLOCK ────────────────────────────────────────── */
+    .law-block {
+      background: var(--inner);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-top: 16px;
+    }
+    .law-block + .law-block { margin-top: 12px; }
+    .law-name {
+      font-family: var(--font-d);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 4px;
+    }
+    .law-ref {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .law-block p {
+      font-size: 14px !important;
+      color: var(--text-3) !important;
+      margin-bottom: 0 !important;
+      line-height: 1.65 !important;
+    }
+
+    /* ── INFO BOX ─────────────────────────────────────────── */
+    .info-box {
+      display: flex;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      margin-top: 16px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .info-box.ok   { background: var(--ok-dim);   border: 1px solid rgba(12,207,160,.18); color: var(--ok); }
+    .info-box.warn { background: var(--warn-dim);  border: 1px solid rgba(245,166,35,.18); color: var(--warn); }
+    .info-box.err  { background: var(--err-dim);   border: 1px solid var(--err-bdr); color: var(--err); }
+
+    .info-box svg { flex-shrink: 0; margin-top: 1px; }
+    .info-box .ib-text { color: inherit; font-weight: 500; }
+    .info-box .ib-text span { display: block; font-weight: 400; margin-top: 2px; opacity: .85; }
+
+    /* ── CONTACT GRID ─────────────────────────────────────── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .contact-card {
+      background: var(--inner);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+    }
+    .cc-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 5px;
+    }
+    .cc-value {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-1);
+      line-height: 1.4;
+      word-break: break-all;
+    }
+    .cc-note {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+
+    /* ── DIVIDER ──────────────────────────────────────────── */
+    .divider {
+      max-width: var(--max-w);
+      margin: 0 auto 22px;
+      padding: 0 20px;
+    }
+    .divider hr {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── FOOTER ───────────────────────────────────────────── */
+    .footer {
+      max-width: var(--max-w);
+      margin: 32px auto 0;
+      padding: 24px 20px 48px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .footer-left { font-size: 13px; color: var(--text-3); line-height: 1.6; }
+    .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+    .footer-links a { font-size: 13px; color: var(--text-3); }
+    .footer-links a:hover { color: var(--accent); }
+
+    /* ── RESPONSIVE ───────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .hero { padding: 40px 20px 32px; }
+      .card { padding: 22px 18px 18px; }
+      .privacy-cols { grid-template-columns: 1fr; }
+      .privacy-col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+      .contact-grid { grid-template-columns: 1fr; }
+      .card-header { gap: 10px; }
+      .card-icon { width: 32px; height: 32px; }
+    }
+
+    @media (max-width: 400px) {
+      .nav-inner { padding: 12px 16px; }
+      .nav-name { font-size: 15px; }
+      .hero-title { font-size: 22px; }
+    }
+
+    @media print {
+      .nav, .jump-bar, .nav-back { display: none; }
+      body { background: #fff; color: #111; }
+      .card, .privacy-card { border: 1px solid #ddd; background: #fff; }
+      .card-title, .card-badge, .law-name { color: #111; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── NAV ───────────────────────────────────────────────── -->
+  <nav class="nav" role="navigation" aria-label="Site navigation">
+    <div class="nav-inner">
+
+      <a href="{{ url_for('index') }}" class="nav-brand" aria-label="FileDrop home">
+        <div class="nav-logo" aria-hidden="true">
+          <img src="{{ url_for('static', filename='/images/FileDrop-favicon.png') }}" alt="FileDrop logo" width="20" height="20">
+        </div>
+        <span class="nav-name">FileDrop</span>
+      </a>
+
+      <a href="{{ url_for('index') }}" class="nav-back" aria-label="Back to app">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             aria-hidden="true">
+          <line x1="19" y1="12" x2="5" y2="12"/>
+          <polyline points="12 19 5 12 12 5"/>
+        </svg>
+        Back to App
+      </a>
+
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ── HERO ──────────────────────────────────────────────── -->
+    <header class="hero">
+      <div class="hero-eyebrow" aria-hidden="true">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        Legal &amp; Privacy
+      </div>
+      <h1 class="hero-title">Transparent by design.<br>Private by default.</h1>
+      <p class="hero-sub">
+        FileDrop was built around a single principle — transfer what you need,
+        leave nothing behind. This page explains exactly what we do, what laws
+        we comply with, and what you can expect from us.
+      </p>
+      <p class="hero-meta">Last updated: July 2026 &nbsp;·&nbsp; Effective immediately</p>
+    </header>
+
+    <!-- ── JUMP LINKS ─────────────────────────────────────────── -->
+    <nav class="jump-bar" aria-label="Jump to section">
+      
+      <a class="jump-link" href="#about">About FileDrop</a>
+      <a class="jump-link" href="#retention">Data Retention</a>
+      <a class="jump-link" href="#terms">Terms of Use</a>
+      <a class="jump-link" href="#prohibited">Prohibited Content</a>
+      <a class="jump-link" href="#indian-law">Indian Law</a>
+      <a class="jump-link" href="#global">Global Compliance</a>
+      <!-- <a class="jump-link" href="#abuse">Report Abuse</a>
+      <a class="jump-link" href="#contact">Contact</a> -->
+      <a class="jump-link" href="#privacy">Privacy at a Glance</a>
+    </nav>
+    
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 1 — PRIVACY AT A GLANCE (SIGNATURE ELEMENT)
+    ════════════════════════════════════════════════════════ -->
+    <section class="section" id="about" aria-labelledby="about-title">
+      <div class="card accent-acc">
+        <div class="card-header">
+          <div class="card-icon icon-acc" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          </div>
+          <div class="card-title-group">
+            <p class="card-badge">About</p>
+            <h2 class="card-title" id="about-title">What is FileDrop?</h2>
+          </div>
+        </div>
+
+        <p>
+          FileDrop is a no-login, no-account file and text transfer web application. It lets
+          you move content from one device to another — a laptop to a phone, a phone to a
+          tablet — using a temporary 7-digit code, with no intermediary apps, no cloud storage
+          accounts, and no lasting trace on our servers.
+        </p>
+        <p>
+          It was built by a developer in India as an open, lightweight alternative to
+          "WhatsApp yourself a file" workflows. FileDrop does not retain, index, analyse,
+          or monetise any user content.
+        </p>
+
+        <div class="info-box ok" role="note">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <div class="ib-text">
+            FileDrop operates as an intermediary — a conduit only.
+            <span>We initiate no transfers, modify no content, and select no recipients.
+            The sender and receiver are always humans making deliberate choices.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 2 — ABOUT FILEDROP
+    ════════════════════════════════════════════════════════ -->
+    
+    <section class="section" id="privacy" aria-labelledby="privacy-title">
+      <div class="privacy-card">
+
+        <div class="privacy-card-header">
+          <p class="card-badge">Privacy at a Glance</p>
+          <h2 class="card-title" id="privacy-title">
+            Exactly what FileDrop collects — and what it never does
+          </h2>
+          <p>No guesswork. No buried clauses. Here is the full picture.</p>
+        </div>
+
+        <div class="privacy-cols">
+
+          <!-- What we collect -->
+          <div class="privacy-col col-ok">
+            <p class="privacy-col-title">What we collect</p>
+
+            <div class="privacy-item">
+              <div class="pi-icon pi-yes">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                     stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <div class="pi-text">
+                <p class="pi-label">Uploader IP address</p>
+                <p class="pi-note">Stored with transfer metadata. Disclosed only under a valid court order. Never sold or shared.</p>
+              </div>
+            </div>
+
+            <div class="privacy-item">
+              <div class="pi-icon pi-yes">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                     stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <div class="pi-text">
+                <p class="pi-label">Upload timestamp</p>
+                <p class="pi-note">Used to calculate the 15-minute expiry. Deleted with the transfer.</p>
+              </div>
+            </div>
+
+            <div class="privacy-item">
+              <div class="pi-icon pi-yes">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                     stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <div class="pi-text">
+                <p class="pi-label">File metadata</p>
+                <p class="pi-note">Filename, MIME type, and size — required to serve the file. Deleted at transfer expiry.</p>
+              </div>
+            </div>
+
+            <div class="privacy-item">
+              <div class="pi-icon pi-yes">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                     stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <div class="pi-text">
+                <p class="pi-label">Standard server request logs</p>
+                <p class="pi-note">Generated automatically by Railway (our host). Retained per Railway's logging policy. We do not control or access these beyond debugging.</p>
+              </div>
+            </div>
+
+          </div><!-- /col-ok -->
+
+          <!-- What we never collect -->
+          <div class="privacy-col col-no">
+            <p class="privacy-col-title">What we never collect</p>
+
+            <div class="privacy-item">
+              <div class="pi-icon pi-no">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#5C6880"
+                     stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </div>
+              <div class="pi-text">
+                <p class="pi-label">User accounts or identity</p>
+                <p class="pi-note">No registration. No names. No emails. Ever.</p>
+              </div>
+            </div>
+
+            <div class="privacy-item">
+              <div class="pi-icon pi-no">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#5C6880"
+                     stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </div>
+              <div class="pi-text">
+                <p class="pi-label">Tracking cookies or sessions</p>
+                <p class="pi-note">FileDrop sets no cookies and runs no analytics scripts.</p>
+              </div>
+            </div>
+
+            <div class="privacy-item">
+              <div class="pi-icon pi-no">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#5C6880"
+                     stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </div>
+              <div class="pi-text">
+                <p class="pi-label">File contents beyond the transfer window</p>
+                <p class="pi-note">Files are deleted from our servers the moment they are downloaded, or after 15 minutes — whichever comes first.</p>
+              </div>
+            </div>
+
+            <div class="privacy-item">
+              <div class="pi-icon pi-no">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#5C6880"
+                     stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </div>
+              <div class="pi-text">
+                <p class="pi-label">Third-party analytics or advertising</p>
+                <p class="pi-note">No Google Analytics, no Facebook Pixel, no ad SDKs of any kind.</p>
+              </div>
+            </div>
+
+            <div class="privacy-item">
+              <div class="pi-icon pi-no">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#5C6880"
+                     stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </div>
+              <div class="pi-text">
+                <p class="pi-label">Device fingerprints or browser data</p>
+                <p class="pi-note">No fingerprinting, no User-Agent profiling, no canvas tracking.</p>
+              </div>
+            </div>
+
+            <div class="privacy-item">
+              <div class="pi-icon pi-no">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#5C6880"
+                     stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </div>
+              <div class="pi-text">
+                <p class="pi-label">Payment or financial information</p>
+                <p class="pi-note">FileDrop is currently free. No billing data is collected.</p>
+              </div>
+            </div>
+
+          </div><!-- /col-no -->
+        </div><!-- /privacy-cols -->
+      </div><!-- /privacy-card -->
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 3 — DATA RETENTION
+    ════════════════════════════════════════════════════════ -->
+    <section class="section" id="retention" aria-labelledby="retention-title">
+      <div class="card accent-ok">
+        <div class="card-header">
+          <div class="card-icon icon-ok" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div class="card-title-group">
+            <p class="card-badge">Data Retention</p>
+            <h2 class="card-title" id="retention-title">Everything expires. Nothing lingers.</h2>
+          </div>
+        </div>
+
+        <p>
+          FileDrop enforces a hard 15-minute data retention window for all transfers.
+          This is not a policy setting — it is implemented at the infrastructure level
+          and cannot be overridden by anyone, including us.
+        </p>
+
+        <ul class="list ok-list" role="list">
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            <span><strong style="color:var(--text-1)">Burn after download</strong> — files are permanently deleted from our servers the moment they are downloaded. The retrieval code becomes invalid immediately.</span>
+          </li>
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            <span><strong style="color:var(--text-1)">Auto-delete at 15 minutes</strong> — if a transfer is not retrieved within 15 minutes of creation, it is permanently deleted by an automated background process, regardless of download status.</span>
+          </li>
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            <span><strong style="color:var(--text-1)">Text burns on read</strong> — text transfers are deleted from our database the instant the recipient retrieves them. Refreshing the page after retrieval shows nothing.</span>
+          </li>
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            <span><strong style="color:var(--text-1)">No backup copies</strong> — FileDrop does not maintain backups of user-uploaded content. Once deleted, recovery is technically impossible.</span>
+          </li>
+        </ul>
+
+        <div class="info-box warn" role="note" style="margin-top:16px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <div class="ib-text">
+            Important for users
+            <span>Because FileDrop deletes files immediately after download and never creates backups, we cannot recover a file after deletion under any circumstances — including legal requests that arrive after the transfer window has closed.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 4 — TERMS OF USE
+    ════════════════════════════════════════════════════════ -->
+    <section class="section" id="terms" aria-labelledby="terms-title">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon icon-acc" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+          </div>
+          <div class="card-title-group">
+            <p class="card-badge">Terms of Use</p>
+            <h2 class="card-title" id="terms-title">By using FileDrop, you agree to the following</h2>
+          </div>
+        </div>
+
+        <p>
+          FileDrop is provided as a free, as-is service for legitimate personal and
+          professional file transfer purposes. Use of this platform constitutes your
+          acceptance of these terms in full.
+        </p>
+
+        <ul class="list ok-list" role="list">
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            <span>You are at least 13 years of age, or have parental consent to use this service.</span>
+          </li>
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            <span>You own or have the right to transfer the content you upload.</span>
+          </li>
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            <span>You will not use FileDrop for any purpose that is unlawful under Indian law or the laws of your jurisdiction.</span>
+          </li>
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            <span>You understand that transfers are temporary and FileDrop cannot be used as a cloud storage or backup service.</span>
+          </li>
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            <span>FileDrop reserves the right to immediately terminate access for users found to be in violation of these terms.</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 5 — PROHIBITED CONTENT
+    ════════════════════════════════════════════════════════ -->
+    <section class="section" id="prohibited" aria-labelledby="prohibited-title">
+      <div class="card accent-err">
+        <div class="card-header">
+          <div class="card-icon icon-err" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F0546A"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+            </svg>
+          </div>
+          <div class="card-title-group">
+            <p class="card-badge">Prohibited Content</p>
+            <h2 class="card-title" id="prohibited-title">The following content is strictly prohibited</h2>
+          </div>
+        </div>
+
+        <p>
+          Uploading or transmitting the following content through FileDrop is a violation
+          of these terms and may constitute a criminal offence under Indian law and/or the
+          laws of your country. Violations will be reported to relevant authorities.
+        </p>
+
+        <ul class="list err-list" role="list">
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#F0546A"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </span>
+            <span><strong style="color:var(--text-1)">Child sexual abuse material (CSAM)</strong> — Any content depicting or facilitating sexual exploitation of minors. Mandatory reporting to NCMEC and Indian law enforcement under IT Act Section 67B.</span>
+          </li>
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#F0546A"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </span>
+            <span><strong style="color:var(--text-1)">Malware, ransomware, or malicious code</strong> — Any executable file, script, or document engineered to cause harm to systems, networks, or individuals. Prohibited under IT Act Sections 43 and 66.</span>
+          </li>
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#F0546A"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </span>
+            <span><strong style="color:var(--text-1)">Content inciting terrorism or violence</strong> — Files promoting, glorifying, or facilitating terrorist acts, communal violence, or harm to individuals. Prohibited under IT Act Section 66F and UAPA.</span>
+          </li>
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#F0546A"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </span>
+            <span><strong style="color:var(--text-1)">Non-consensual intimate imagery</strong> — Sharing private sexual images without the subject's consent. Prohibited under IT Act Section 66E and IPC Section 354C.</span>
+          </li>
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#F0546A"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </span>
+            <span><strong style="color:var(--text-1)">Copyrighted content without authorisation</strong> — Distributing films, music, software, books, or other protected works without the rights holder's permission. Prohibited under the Copyright Act, 1957.</span>
+          </li>
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#F0546A"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </span>
+            <span><strong style="color:var(--text-1)">Personal data of third parties without consent</strong> — Sharing Aadhaar numbers, PAN cards, financial records, or other personal information of individuals who have not authorised the transfer. Prohibited under the DPDP Act, 2023.</span>
+          </li>
+        </ul>
+
+        <div class="info-box err" role="alert" style="margin-top:16px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <div class="ib-text">
+            We cooperate fully with law enforcement
+            <span>FileDrop will provide uploader IP addresses and timestamps to competent authorities upon receipt of a valid court order or law enforcement request, as required by Indian law.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 6 — INDIAN LEGAL FRAMEWORK
+    ════════════════════════════════════════════════════════ -->
+    <section class="section" id="indian-law" aria-labelledby="indian-law-title">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon icon-acc" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </div>
+          <div class="card-title-group">
+            <p class="card-badge">Indian Law</p>
+            <h2 class="card-title" id="indian-law-title">Legal framework we operate under</h2>
+          </div>
+        </div>
+
+        <p>
+          FileDrop is built and operated in India, and is primarily governed by Indian
+          technology and data protection laws. We have designed the platform to comply
+          with the following statutes.
+        </p>
+
+        <div class="law-block">
+          <p class="law-ref">IT Act 2000 · Section 79</p>
+          <p class="law-name">Safe Harbour for Intermediaries</p>
+          <p>
+            FileDrop qualifies as an intermediary under Section 79 of the Information
+            Technology Act, 2000. As an intermediary, we are not liable for third-party
+            content transmitted through our platform, provided we: (a) do not initiate
+            the transmission, (b) do not select the receiver, (c) do not modify the
+            content, and (d) act expeditiously upon receiving actual knowledge of
+            unlawful content. FileDrop satisfies all four conditions by design.
+          </p>
+        </div>
+
+        <div class="law-block">
+          <p class="law-ref">IT Rules 2021 · Intermediary Guidelines</p>
+          <p class="law-name">Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021</p>
+          <p>
+            FileDrop publishes this Terms of Service and Privacy Policy as required by
+            Rule 3(1)(a). We respond to abuse reports and government orders as required
+            by Rule 3(1)(b) and Rule 3(2). FileDrop is not classified as a "significant
+            social media intermediary" (which requires 5 million+ registered users) and
+            is therefore not subject to the additional obligations under Rule 4.
+          </p>
+        </div>
+
+        <div class="law-block">
+          <p class="law-ref">DPDP Act 2023</p>
+          <p class="law-name">Digital Personal Data Protection Act, 2023</p>
+          <p>
+            FileDrop collects minimal personal data — only the uploader's IP address and
+            upload timestamp, both of which are deleted alongside the transfer within
+            15 minutes. We process this data only for the purpose of enabling the
+            transfer and for law enforcement compliance, consistent with the principles
+            of purpose limitation and storage limitation under the DPDP Act.
+          </p>
+        </div>
+
+        <div class="law-block">
+          <p class="law-ref">IT Act 2000 · Sections 43, 66, 66B, 66C, 67, 67A, 67B</p>
+          <p class="law-name">Cybercrime Provisions</p>
+          <p>
+            FileDrop expressly prohibits use of the platform for any activity that
+            constitutes an offence under these sections, including unauthorised access
+            to computer systems, data theft, identity fraud, transmission of obscene
+            material, and distribution of child sexual abuse material. Violations are
+            reported to CERT-In and relevant law enforcement agencies.
+          </p>
+        </div>
+
+        <div class="law-block">
+          <p class="law-ref">Copyright Act, 1957</p>
+          <p class="law-name">Intellectual Property Protection</p>
+          <p>
+            Users may not use FileDrop to distribute copyrighted works without the
+            rights holder's authorisation. FileDrop will respond to valid copyright
+            infringement notices submitted to our abuse contact within 36 hours.
+            Given our 15-minute retention window, most transfers will have self-deleted
+            before a notice can be acted upon.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 7 — GLOBAL COMPLIANCE
+    ════════════════════════════════════════════════════════ -->
+    <section class="section" id="global" aria-labelledby="global-title">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon icon-acc" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+          </div>
+          <div class="card-title-group">
+            <p class="card-badge">Global</p>
+            <h2 class="card-title" id="global-title">International users</h2>
+          </div>
+        </div>
+
+        <p>
+          FileDrop is accessible globally. While Indian law is our primary legal
+          framework, we acknowledge the following international standards and aim to
+          align with their principles.
+        </p>
+
+        <div class="law-block">
+          <p class="law-ref">GDPR — European Union</p>
+          <p class="law-name">General Data Protection Regulation</p>
+          <p>
+            FileDrop's data minimisation approach aligns with GDPR principles. We
+            collect only what is technically necessary (IP address, timestamp), delete
+            data within 15 minutes, and do not share data with third parties for
+            commercial purposes. EU users should be aware that FileDrop is operated
+            from India, and data is processed on servers hosted by Railway (US) and
+            Upstash (US-based infrastructure with Indian region options).
+          </p>
+        </div>
+
+        <div class="law-block">
+          <p class="law-ref">DMCA — United States</p>
+          <p class="law-name">Digital Millennium Copyright Act</p>
+          <p>
+            FileDrop honours DMCA takedown notices submitted to our abuse contact.
+            Given our 15-minute retention window, infringing content will typically
+            have been automatically deleted before a notice is acted upon. To submit
+            a DMCA notice, email us with: (a) identification of the copyrighted work,
+            (b) the transfer code if known, (c) your contact details, and (d) a
+            statement of good faith belief. We respond within 48 hours.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 8 — ABUSE REPORTING
+    ════════════════════════════════════════════════════════ -->
+    <!-- <section class="section" id="abuse" aria-labelledby="abuse-title">
+      <div class="card accent-warn">
+        <div class="card-header">
+          <div class="card-icon icon-warn" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F5A623"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
+          <div class="card-title-group">
+            <p class="card-badge">Abuse Reporting</p>
+            <h2 class="card-title" id="abuse-title">Report harmful content or misuse</h2>
+          </div>
+        </div>
+
+        <p>
+          If you encounter a FileDrop transfer that you believe contains illegal,
+          harmful, or policy-violating content, report it immediately. We treat all
+          abuse reports seriously and act within the timeframes required by Indian law.
+        </p>
+
+        <ul class="list warn-list" role="list">
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#F5A623"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            <span>Email your report to <a href="mailto:abuse@filedrop.app">abuse@filedrop.app</a> with the 7-digit code and a description of the concern.</span>
+          </li>
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#F5A623"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            <span>Upon receiving a credible report, we immediately delete the transfer from our servers — even if it is within the 15-minute window.</span>
+          </li>
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#F5A623"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            <span>For CSAM reports: we report to NCMEC's CyberTipline and CERT-In within 24 hours as required by Indian law, even if the content has already been auto-deleted.</span>
+          </li>
+          <li>
+            <span class="li-icon" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#F5A623"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+            <span>We acknowledge all non-CSAM abuse reports within 48 hours and resolve them within the timeframes mandated by applicable law.</span>
+          </li>
+        </ul>
+      </div>
+    </section> -->
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 9 — CONTACT
+    ════════════════════════════════════════════════════════ -->
+    <!-- <section class="section" id="contact" aria-labelledby="contact-title">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon icon-acc" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          <div class="card-title-group">
+            <p class="card-badge">Contact & Grievance</p>
+            <h2 class="card-title" id="contact-title">Get in touch</h2>
+          </div>
+        </div>
+
+        <p>
+          For abuse reports, copyright notices, legal requests, or general enquiries
+          about this policy, contact us through the appropriate channel below.
+        </p>
+
+        <div class="contact-grid">
+          <div class="contact-card">
+            <p class="cc-label">Abuse &amp; Illegal Content</p>
+            <p class="cc-value">
+              <a href="mailto:abuse@filedrop.app">abuse@filedrop.app</a>
+            </p>
+            <p class="cc-note">Response within 24 hours for CSAM. 48 hours for all other reports.</p>
+          </div>
+
+          <div class="contact-card">
+            <p class="cc-label">Legal &amp; Law Enforcement</p>
+            <p class="cc-value">
+              <a href="mailto:legal@filedrop.app">legal@filedrop.app</a>
+            </p>
+            <p class="cc-note">Court orders, government requests, DMCA notices. Include reference number.</p>
+          </div>
+
+          <div class="contact-card">
+            <p class="cc-label">Grievance Officer</p>
+            <p class="cc-value">Amaresh<br>
+              <a href="mailto:grievance@filedrop.app">grievance@filedrop.app</a>
+            </p>
+            <p class="cc-note">As designated under IT Rules 2021 Rule 3(1)(b). Response within 24 hours.</p>
+          </div>
+
+          <div class="contact-card">
+            <p class="cc-label">General Enquiries</p>
+            <p class="cc-value">
+              <a href="mailto:hello@filedrop.app">hello@filedrop.app</a>
+            </p>
+            <p class="cc-note">Feature requests, privacy questions, partnership enquiries.</p>
+          </div>
+        </div>
+
+        <div class="info-box ok" role="note" style="margin-top:18px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <div class="ib-text">
+            Note on email domains
+            <span>The filedrop.app email addresses listed are illustrative. Update them to your actual contact addresses before publishing this page publicly. If you do not have a custom domain yet, use your personal email temporarily.</span>
+          </div>
+        </div>
+      </div>
+    </section> -->
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         SECTION 10 — DISCLAIMER
+    ════════════════════════════════════════════════════════ -->
+    <section class="section" id="disclaimer" aria-labelledby="disclaimer-title">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon icon-acc" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0CCFA0"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </div>
+          <div class="card-title-group">
+            <p class="card-badge">Disclaimer</p>
+            <h2 class="card-title" id="disclaimer-title">Platform liability</h2>
+          </div>
+        </div>
+
+        <p>
+          FileDrop is a conduit service. We transmit content chosen by users, to
+          recipients chosen by users. We do not author, edit, endorse, or take
+          responsibility for user-generated content transmitted through the platform.
+        </p>
+        <p>
+          FileDrop is provided "as is" without warranty of any kind. We make no
+          guarantees of uptime, data integrity, or uninterrupted service. Since all
+          data is deleted within 15 minutes, FileDrop should never be used as the sole
+          method of transmitting critical or irreplaceable content.
+        </p>
+        <p>
+          By using FileDrop, you agree that the operator shall not be liable for any
+          direct, indirect, incidental, or consequential damages arising from your use
+          of the service, including but not limited to loss of data, loss of business,
+          or legal consequences arising from your own uploads.
+        </p>
+        <p style="color:var(--text-3); font-size:14px; margin-top:8px">
+          This policy is subject to change. Material changes will be reflected in the
+          "Last updated" date at the top of this page. Continued use of FileDrop
+          after a policy update constitutes acceptance of the revised terms.
+        </p>
+      </div>
+    </section>
+
+
+    <div class="divider" aria-hidden="true"><hr></div>
+
+  </main><!-- /main -->
+
+
+  <!-- ── FOOTER ─────────────────────────────────────────────── -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer-left">
+      <strong style="color:var(--text-2)">FileDrop</strong> &nbsp;·&nbsp;
+      Legal &amp; Privacy Policy<br>
+      Last updated: July 2026 &nbsp;·&nbsp; Governed by Indian law
+    </div>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="{{ url_for('index') }}">Back to App</a>
+      
+      <a href="#privacy">Privacy</a>
+    </nav>
+  </footer>
+
+</body>
+</html>
+
+
+    
+
+
